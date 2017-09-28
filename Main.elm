@@ -33,18 +33,17 @@ init =
 view : Model -> Html Msg
 view model =
     fieldset []
-        [ label []
-            [ input [ type_ "checkbox", onClick ToggleNotifications ] []
-            , text "Email Notifications"
-            ]
-        , label []
-            [ input [ type_ "checkbox", onClick ToggleAutoplay ] []
-            , text "Video Autoplay"
-            ]
-        , label []
-            [ input [ type_ "checkbox", onClick ToggleLocation ] []
-            , text "Use Location"
-            ]
+        [ checkbox ToggleNotifications "Email Notifications"
+        , checkbox ToggleAutoplay "Video Autoplay"
+        , checkbox ToggleLocation "Use Location"
+        ]
+
+
+checkbox : msg -> String -> Html msg
+checkbox msg name =
+    label []
+        [ input [ type_ "checkbox", onClick msg ] []
+        , text name
         ]
 
 
