@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, div, span, button, text, input, label, fieldset)
+import Html exposing (Html, div, span, button, text, input, label, fieldset, ul, li, p, br)
 import Html.Attributes exposing (type_, style)
 import Html.Events exposing (onClick)
 
@@ -42,34 +42,43 @@ init =
 view : Model -> Html Msg
 view model =
     let
-        checkboxes =
-            case model.autoplay.enabled of
-                True ->
-                    [ checkbox ToggleNotifications "Email Notifications"
-                    , checkbox ToggleAutoplay "Video Autoplay"
-                    , checkbox ToggleAutoplayAudio "Autoplay with audio"
-                    , checkbox ToggleAutoplayWithoutWifi "Autoplay without wifi"
-                    , checkbox ToggleLocation "Use Location"
-                    ]
+        isAutoplay =
+            model.autoplay.enabled
 
-                False ->
-                    [ checkbox ToggleNotifications "Email Notifications"
-                    , checkbox ToggleAutoplay "Video Autoplay"
-                    , checkbox ToggleLocation "Use Location"
-                    ]
+        checkboxes =
+            [ checkbox True "20px" ToggleNotifications "Email Notifications"
+            , checkbox True "20px" ToggleAutoplay "Video Autoplay"
+            , checkbox isAutoplay "50px" ToggleAutoplayAudio "Autoplay with audio"
+            , checkbox isAutoplay "50px" ToggleAutoplayWithoutWifi "Autoplay without wifi"
+            , checkbox True "20px" ToggleLocation "Use Location"
+            ]
     in
         div []
-            [ fieldset [] checkboxes
+            [ text "Settings:"
+            , div [] checkboxes
+            , br [] []
+            , text "Model: "
             , text (toString model)
             ]
 
 
-checkbox : msg -> String -> Html msg
-checkbox msg name =
-    label [ style [ ( "padding", "20px" ) ] ]
-        [ input [ type_ "checkbox", onClick msg ] []
-        , text name
-        ]
+checkbox : Bool -> String -> msg -> String -> Html msg
+checkbox display propPadding msg name =
+    let
+        propDisplay =
+            case display of
+                True ->
+                    "block"
+
+                False ->
+                    "none"
+    in
+        span [ style [ ( "display", propDisplay ), ( "margin-top", "5px" ), ( "margin-bottom", "5px" ) ] ]
+            [ label [ style [ ( "padding-left", propPadding ) ] ]
+                [ input [ type_ "checkbox", onClick msg ] []
+                , text name
+                ]
+            ]
 
 
 
