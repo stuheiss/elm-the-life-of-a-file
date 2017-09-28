@@ -1,18 +1,20 @@
 module Main exposing (..)
 
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, span, button, text, input, label, fieldset)
+import Html.Attributes exposing (type_, style)
+import Html.Events exposing (onClick)
 
 
 -- MODEL
 
 
 type alias Model =
-    {}
+    { notifications : Bool, autoplay : Bool, location : Bool }
 
 
 model : Model
 model =
-    {}
+    { notifications = False, autoplay = False, location = False }
 
 
 
@@ -30,8 +32,19 @@ init =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ text "Hello world!"
+    fieldset []
+        [ label []
+            [ input [ type_ "checkbox", onClick ToggleNotifications ] []
+            , text "Email Notifications"
+            ]
+        , label []
+            [ input [ type_ "checkbox", onClick ToggleAutoplay ] []
+            , text "Video Autoplay"
+            ]
+        , label []
+            [ input [ type_ "checkbox", onClick ToggleLocation ] []
+            , text "Use Location"
+            ]
         ]
 
 
@@ -40,13 +53,15 @@ view model =
 
 
 type Msg
-    = Noop
+    = ToggleNotifications
+    | ToggleAutoplay
+    | ToggleLocation
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Noop ->
+        _ ->
             ( model, Cmd.none )
 
 
