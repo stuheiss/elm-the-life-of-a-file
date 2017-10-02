@@ -16,7 +16,8 @@ type alias Model =
     , location : Bool
     , animals : List ( String, Bool )
     , fruits : List String
-    , selected : Set String
+    , selected : List String
+    , maxfruits : Int
     , languages : Dict String Bool
     }
 
@@ -56,7 +57,7 @@ languages =
 
 defaults : Model
 defaults =
-    Model False (Autoplay False False False) False animals listOfFruits Set.empty languages
+    Model False (Autoplay False False False) False animals listOfFruits [] 2 languages
 
 
 model : Model
@@ -138,12 +139,12 @@ checkboxAnimal ( animal, isChecked ) =
         ]
 
 
-checkboxFruit : Set String -> String -> Html Msg
+checkboxFruit : List String -> String -> Html Msg
 checkboxFruit selectedFruits fruit =
     label [ style [ ( "display", "block" ) ] ]
         [ input
             [ type_ "checkbox"
-            , checked (Set.member fruit selectedFruits)
+            , checked (List.member fruit selectedFruits)
             , onClick (ToggleFruit fruit)
             ]
             []
@@ -230,10 +231,10 @@ update msg model =
         ToggleFruit fruit ->
             let
                 newselected =
-                    if Set.member fruit model.selected then
-                        Set.remove fruit model.selected
+                    if List.member fruit model.selected then
+                        List.filter (\x -> x /= fruit) model.selected
                     else
-                        Set.insert fruit model.selected
+                        List.take model.maxfruits <| fruit :: model.selected
             in
                 ( { model | selected = newselected }, Cmd.none )
 

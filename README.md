@@ -42,3 +42,4 @@ Implement the options in such a way that their checkboxes are only visible if Vi
         python
         swift
 
+Feature request - only 2 fruits can be selected. Maintain order. When a 3rd fruit is selected, unselect the oldest selection. Set does not handle this easily. Consider alternate data structures. Use a List for selections. This also allows changing the max to a different number.
