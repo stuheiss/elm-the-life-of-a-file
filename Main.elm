@@ -5,6 +5,7 @@ import Html.Attributes exposing (type_, style, checked)
 import Html.Events exposing (onClick)
 import Set exposing (Set)
 import Dict exposing (Dict)
+import SelectedFruit as SF
 
 
 -- MODEL
@@ -16,8 +17,7 @@ type alias Model =
     , location : Bool
     , animals : List ( String, Bool )
     , fruits : List String
-    , selected : List String
-    , maxfruits : Int
+    , selected : SF.SelectedFruit
     , languages : Dict String Bool
     }
 
@@ -26,6 +26,7 @@ type alias Autoplay =
     { enabled : Bool, audio : Bool, withoutWifi : Bool }
 
 
+listOfFruits : List String
 listOfFruits =
     [ "Apple"
     , "Appricot"
@@ -36,6 +37,7 @@ listOfFruits =
     ]
 
 
+animals : List ( String, Bool )
 animals =
     [ ( "cat", False )
     , ( "dog", False )
@@ -43,6 +45,7 @@ animals =
     ]
 
 
+languages : Dict String Bool
 languages =
     Dict.fromList
         [ ( "C", False )
@@ -57,7 +60,7 @@ languages =
 
 defaults : Model
 defaults =
-    Model False (Autoplay False False False) False animals listOfFruits [] 2 languages
+    Model False (Autoplay False False False) False animals listOfFruits SF.empty languages
 
 
 model : Model
@@ -139,12 +142,12 @@ checkboxAnimal ( animal, isChecked ) =
         ]
 
 
-checkboxFruit : List String -> String -> Html Msg
+checkboxFruit : SF.SelectedFruit -> String -> Html Msg
 checkboxFruit selectedFruits fruit =
     label [ style [ ( "display", "block" ) ] ]
         [ input
             [ type_ "checkbox"
-            , checked (List.member fruit selectedFruits)
+            , checked (SF.member fruit selectedFruits)
             , onClick (ToggleFruit fruit)
             ]
             []
@@ -231,10 +234,10 @@ update msg model =
         ToggleFruit fruit ->
             let
                 newselected =
-                    if List.member fruit model.selected then
-                        List.filter (\x -> x /= fruit) model.selected
+                    if SF.member fruit model.selected then
+                        SF.remove fruit model.selected
                     else
-                        List.take model.maxfruits <| fruit :: model.selected
+                        SF.insert fruit model.selected
             in
                 ( { model | selected = newselected }, Cmd.none )
 
@@ -278,6 +281,7 @@ update msg model =
 -- SUBS
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { view = view
